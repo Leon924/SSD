@@ -1,6 +1,5 @@
 #ifndef __MINST__ 
 #define __MINST__
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
