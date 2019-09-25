@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include <random>
 #include <time.h>
 #include "cnn.h"
 #include "mat.h"
@@ -19,7 +18,7 @@ void cnnSetup(CNN* cnn, nSize inputSize, int outputSize) {
 	inSize.c = inSize.c - mapSize + 1;
 	inSize.r = inSize.r - mapSize + 1;
 
-	cnn->P2 = initPoolLayer(inSize.c, inSize.r, 2, 6, 6, AvePool);//stride等于2
+	cnn->P2 = initPoolLayer(inSize.c, inSize.r, 2, 6, 6, AvePool);//stride equals 2
 	inSize.c = inSize.c / 2;
 	inSize.r = inSize.r / 2;
 
@@ -27,7 +26,7 @@ void cnnSetup(CNN* cnn, nSize inputSize, int outputSize) {
 	inSize.c = inSize.c - mapSize + 1;
 	inSize.r = inSize.r - mapSize + 1;
 
-	cnn->P4 = initPoolLayer(inSize.c, inSize.r, 2, 12, 12, AvePool);//stride等于2
+	cnn->P4 = initPoolLayer(inSize.c, inSize.r, 2, 12, 12, AvePool);//stride equals 2
 	inSize.c = inSize.c / 2;
 	inSize.r = inSize.r / 2;
 
@@ -36,7 +35,7 @@ void cnnSetup(CNN* cnn, nSize inputSize, int outputSize) {
 	//cnn->e = (float*)calloc(cnn->O5->outputNum, sizeof(float));
 }
 
-//导入cnn的数据
+//import the data ofg cnn
 void importCnn(CNN* cnn, const char* filename) {
 
 	int i, j, c, r;
@@ -49,7 +48,7 @@ void importCnn(CNN* cnn, const char* filename) {
 	for (i = 0; i < cnn->C1->outChannels; i++)
 		cnn->C1->biasData[i] = i % 2;
 
-	//C3网络
+	//C3 convLayer
 	for (i = 0; i < cnn->C3->outChannels; i++)
 		for (j = 0; j < cnn->C3->inChannels; j++)
 			for (r = 0; r < cnn->C3->mapSize; r++)
@@ -59,7 +58,7 @@ void importCnn(CNN* cnn, const char* filename) {
 	for (i = 0; i < cnn->C3->outChannels; i++)
 		cnn->C3->biasData[i] = i % 2;
 
-	//O5输出层
+	//O5 outputLayer
 	for (i = 0; i < cnn->O5->outputNum; i++)
 		for (j = 0; j < cnn->O5->inputNum; j++)
 			cnn->O5->wData[i][j] = j % 2;
@@ -80,9 +79,9 @@ CovLayer* initCovLayer(int inputWidth, int inputHeight, int mapSize, int inChann
 	covL->inChannels = inChannels;
 	covL->outChannels = outChannels;
 
-	covL->isFullConnect = true;
+	covL->isFullConnect = True;
 
-	//权重空间的初始化， 先行再列调用，[r][c]
+	//initialize mapData
 	int i, j, c, r;
 	covL->mapData = (float****)malloc(outChannels * sizeof(float***));
 	for (i = 0; i < outChannels; i++) {
@@ -98,7 +97,7 @@ CovLayer* initCovLayer(int inputWidth, int inputHeight, int mapSize, int inChann
 		}
 	}
 
-	//同一个outChannels的bias相同
+	//Every outchannels has a same bias variable
 	covL->biasData = (float*)calloc(outChannels, sizeof(float));
 
 	int outW = inputWidth - mapSize + 1;
@@ -160,7 +159,7 @@ OutLayer* initOutLayer(int inputNum, int outputNum) {
 	outL->v = (float*)calloc(outputNum, sizeof(float));
 	outL->y = (float*)calloc(outputNum, sizeof(float));
 
-	//权重的初始化
+	//initialize weight
 	outL->wData = (float**)malloc(outputNum * sizeof(float*));
 	int i, j;
 
@@ -170,11 +169,11 @@ OutLayer* initOutLayer(int inputNum, int outputNum) {
 			outL->wData[i][j] = rand() % 2;
 		}
 	}
-	outL->isFullConnect = true;
+	outL->isFullConnect = True;
 	return outL;
 }
 
-//返回向量中最大元素的下标
+//return the subscripts of the biggest element of this vector
 int vecmaxIndex(float* vec, int veclength) {
 	int i;
 	float maxnum = -1.0;
@@ -204,13 +203,13 @@ float cnnTest(CNN* cnn, ImgArr inputData, LabelArr outputData, int testNum) {
 void cnnFf(CNN* cnn, float** inputData) {
 	int outSizeW = cnn->P2->inputWidth;
 	int outSizeH = cnn->P2->inputHeight;
-	//第一层的传播
+	//The feedforward propogation in the first layer
 	int i, j, r, c;
-	//第一层输出数据
+	//Size of kernel, input featuremap, and output featuremap
 	nSize mapSize = { cnn->C1->mapSize, cnn->C1->mapSize };
 	nSize inSize = { cnn->C1->inputWidth, cnn->C1->inputHeight };
 	nSize outSize = { cnn->P2->inputWidth, cnn->P2->inputHeight };
-	//完成了w * x + b
+	//w * x + b
 	for (i = 0; i < (cnn->C1->outChannels); i++) {
 		for (j = 0; j < (cnn->C1->inChannels); j++) {
 			float** mapout = conv(cnn->C1->mapData[i][j], mapSize, inputData, inSize, valid);
@@ -225,7 +224,7 @@ void cnnFf(CNN* cnn, float** inputData) {
 		}
 	}
 
-	//第二层P2, 采样层
+	//S2 Layer, sub-sampling Layer
 	outSize.c = cnn->C3->inputWidth;
 	outSize.r = cnn->C3->inputHeight;
 	inSize.c = cnn->P2->inputWidth;
@@ -235,7 +234,7 @@ void cnnFf(CNN* cnn, float** inputData) {
 			avePooling(cnn->P2->y[i], outSize, cnn->C1->y[i], inSize, cnn->P2->mapSize);
 	}
 
-	//第三层输出传播，这里是全连接
+	//C3 Layer, conv Layer
 	outSize.c = cnn->P4->inputWidth;
 	outSize.r = cnn->P4->inputHeight;
 	inSize.c = cnn->C3->inputWidth;
@@ -256,7 +255,7 @@ void cnnFf(CNN* cnn, float** inputData) {
 				cnn->C3->y[i][r][c] = activation_Sigma(cnn->C3->v[i][r][c], cnn->C3->biasData[i]);
 	}
 
-	//第四层的输出传播
+	//S4 Layer, subsampling Layer
 	inSize.c = cnn->P4->inputWidth;
 	inSize.r = cnn->P4->inputHeight;
 	outSize.c = inSize.c / cnn->P4->mapSize;
@@ -266,8 +265,8 @@ void cnnFf(CNN* cnn, float** inputData) {
 			avePooling(cnn->P4->y[i], outSize, cnn->C3->y[i], inSize, cnn->P4->mapSize);
 	}
 
-	//输出层O5的处理
-	//首先将P4输出的多维向量展开成一维向量
+	//output Layer
+	//expand the ouput of S4, muti-dimensional vector to one dimensional vector
 	float* O5inData = (float*)malloc((cnn->O5->inputNum) * sizeof(float));
 	for (i = 0; i < cnn->P4->outchannels; i++)
 		for (r = 0; r < outSize.r; r++)
@@ -275,20 +274,21 @@ void cnnFf(CNN* cnn, float** inputData) {
 				O5inData[i * outSize.r * outSize.c + r * outSize.c + c] = cnn->P4->y[i][r][c];
 
 	nSize nnSize = { cnn->O5->inputNum, cnn->O5->outputNum };
-	nnFf(cnn->O5->v, O5inData, cnn->O5->wData, cnn->O5->biasData, nnSize);//向量乘法
+	nnFf(cnn->O5->v, O5inData, cnn->O5->wData, cnn->O5->biasData, nnSize);//Vector multiplication
 	for (i = 0; i < cnn->O5->outputNum; i++)
 		cnn->O5->y[i] = activation_Sigma(cnn->O5->v[i], cnn->O5->biasData[i]);
 	free(O5inData);
 }
 
 
-//激活函数 input是数据，inputNum说明数据数目，bais表示偏置
+//activation function
 float activation_Sigma(float input, float bias) {
 	float temp = input + bias;
 	return (float)1.0 / ((float)(1.0 + exp(-temp)));
 }
 
-void avePooling(float** output, nSize outputSize, float** input, nSize inputSize, int mapSize)//求平均值
+// average pooling
+void avePooling(float** output, nSize outputSize, float** input, nSize inputSize, int mapSize)
 {
 	int outputW = inputSize.c / mapSize;
 	int outputH = inputSize.r / mapSize;
@@ -307,17 +307,17 @@ void avePooling(float** output, nSize outputSize, float** input, nSize inputSize
 		}
 }
 
-//单层全连接神经网络的前向传播
+//The feedforward propogation of FcLayer
 float vecMulti(float* vec1, float* vec2, int vecL) {
 	int i;
 	float m = 0;
 	for (i = 0; i < vecL; i++)
-		m = m + vec1[i] * vec2[i];//向量元素相乘
+		m = m + vec1[i] * vec2[i];//the element of vector multiplies.
 	return m;
 }
 
 void nnFf(float* output, float* input, float** wdata, float* bias, nSize nnSize) {
-	int w = nnSize.c;//向量的长度
+	int w = nnSize.c;//the length of vector
 	int h = nnSize.r;
 
 	int i;
@@ -325,10 +325,10 @@ void nnFf(float* output, float* input, float** wdata, float* bias, nSize nnSize)
 		output[i] = vecMulti(input, wdata[i], w) + bias[i];
 }
 
+//Clear the data in CNN
 void cnnClear(CNN* cnn) {
-	//将神经元的部分数据清除
 	int j, c, r;
-	//C1网络
+	//C1 Layer
 	for (j = 0; j < cnn->C1->outChannels; j++) {
 		for (r = 0; r < cnn->P2->inputHeight; r++) {
 			for (c = 0; c < cnn->P2->inputWidth; c++) {
@@ -338,7 +338,7 @@ void cnnClear(CNN* cnn) {
 		}
 	}
 
-	//P2网络
+	//S2 Layer
 	for (j = 0; j < cnn->P2->outchannels; j++) {
 		for (r = 0; r < cnn->C3->inputHeight; r++) {
 			for (c = 0; c < cnn->C3->inputWidth; c++) {
@@ -347,7 +347,7 @@ void cnnClear(CNN* cnn) {
 		}
 	}
 
-	//C3网络
+	//C3 Layer
 	for (j = 0; j < cnn->C3->outChannels; j++) {
 		for (r = 0; r < cnn->P4->inputHeight; r++) {
 			for (c = 0; c < cnn->P4->inputWidth; c++) {
@@ -357,7 +357,7 @@ void cnnClear(CNN* cnn) {
 		}
 	}
 
-	//P4网络
+	//S4 Layer
 	for (j = 0; j < cnn->P4->outchannels; j++) {
 		for (r = 0; r < cnn->P4->inputHeight / cnn->P4->mapSize; r++) {
 			for (c = 0; c < cnn->P4->inputWidth / cnn->P4->mapSize; c++) {
@@ -366,7 +366,7 @@ void cnnClear(CNN* cnn) {
 		}
 	}
 
-	//O5输出
+	//O5 Layer
 	for (j = 0; j < cnn->O5->outputNum; j++) {
 		cnn->O5->v[j] = (float)0.0;
 	}

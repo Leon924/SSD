@@ -1,15 +1,14 @@
-﻿#include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include <random>
 #include <time.h>
 #include "cnn.h"
 #include "minst.h"
 
 
 int  main() {
-	int testNum = 9;
+	int testNum = 10;
 	LabelArr testLabel = read_Label(testNum);
 	ImgArr testImg = read_Img(testNum);
 

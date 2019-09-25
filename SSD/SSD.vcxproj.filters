@@ -15,16 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="train.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="cnn.cpp">
+    <ClCompile Include="cnn.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="mat.cpp">
+    <ClCompile Include="deploy.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="minst.cpp">
+    <ClCompile Include="mat.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="minst.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

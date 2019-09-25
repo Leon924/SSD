@@ -6,15 +6,15 @@
 #include "minst.h"
 
 
-ImgArr read_Img(int number_of_images)//¶ÁÈëÍ¼Ïñ
+ImgArr read_Img(int number_of_images)//è¯»å…¥å›¾åƒ
 {
 
 	int n_rows = 28;
 	int n_cols = 28;
 
-	//»ñÈ¡µÚÒ»·ùÍ¼Ïñ£¬±£´æµ½vecÖÐ
+	//èŽ·å–ç¬¬ä¸€å¹…å›¾åƒï¼Œä¿å­˜åˆ°vecä¸­
 	int i, r, c;
-	//Í¼ÏñÊý×éµÄ³õÊ¼»¯
+	//å›¾åƒæ•°ç»„çš„åˆå§‹åŒ–
 	ImgArr imgarr = (ImgArr)malloc(sizeof(MinstImgArr));
 	imgarr->ImgNum = number_of_images;
 	imgarr->ImgPtr = (MinstImg*)malloc(number_of_images * sizeof(MinstImg));
@@ -39,7 +39,7 @@ LabelArr read_Label(int number_of_labels) {
 	int label_long = 10;
 	int i, l;
 
-	//Í¼Ïñ±ê¼ÇÊý×éµÄ³õÊ¼»¯
+	//å›¾åƒæ ‡è®°æ•°ç»„çš„åˆå§‹åŒ–
 	LabelArr labelarr = (LabelArr)malloc(sizeof(MinstLabelArr));
 	labelarr->LabelNum = number_of_labels;
 	labelarr->LabelPtr = (MinstLabel*)malloc(number_of_labels * sizeof(MinstLabel));
