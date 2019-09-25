@@ -8,11 +8,11 @@
 #include <time.h>
 
 
-typedef struct MinstImg{
+typedef struct MinstImg {
 	int c;	
 	int r;
 	float** ImgData; //array of one image
-}MinstImg;
+} MinstImg;
 
 typedef struct MinstImgArr{
 	int ImgNum; 
@@ -22,7 +22,7 @@ typedef struct MinstImgArr{
 typedef struct MnistLabel{
 	int l;	//length of label
 	float* LabelData; //vector of label
-}MinstLabel;
+} MinstLabel;
 
 typedef struct MinstLabelArr{
 	int LabelNum; 
