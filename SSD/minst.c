@@ -6,16 +6,15 @@
 #include "minst.h"
 
 
-ImgArr read_Img(int number_of_images)//读入图像
+ImgArr read_Img(int number_of_images)
 {
 
 	int n_rows = 28;
 	int n_cols = 28;
 
-	//获取第一幅图像，保存到vec中
+
 	int i, r, c;
-	//图像数组的初始化
-	ImgArr imgarr = (ImgArr)malloc(sizeof(MinstImgArr));
+	ImgArr imgarr = (ImgArr)malloc(sizeof(ImgArr));
 	imgarr->ImgNum = number_of_images;
 	imgarr->ImgPtr = (MinstImg*)malloc(number_of_images * sizeof(MinstImg));
 
@@ -39,8 +38,8 @@ LabelArr read_Label(int number_of_labels) {
 	int label_long = 10;
 	int i, l;
 
-	//图像标记数组的初始化
-	LabelArr labelarr = (LabelArr)malloc(sizeof(MinstLabelArr));
+	//initialize img array
+	LabelArr labelarr = (LabelArr)malloc(sizeof(LabelArr));
 	labelarr->LabelNum = number_of_labels;
 	labelarr->LabelPtr = (MinstLabel*)malloc(number_of_labels * sizeof(MinstLabel));
 

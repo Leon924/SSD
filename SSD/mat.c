@@ -1,9 +1,9 @@
+#include "mat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include "mat.h"
 
 float** rotate180(float** mat, nSize matSize) { 
 	int i, c, r;
@@ -50,9 +50,12 @@ float** correlation(float** map, nSize mapSize, float** inputData, nSize inSize,
 	}
 
 	//default: full mode, means starting convolution once filter overlapp the image
+
 	int outSizeW = inSize.c + (mapSize.c - 1);
 	int outSizeH = inSize.r + (mapSize.r - 1);
-	float** outputData = (float**)malloc(outSizeH * sizeof(float*));
+
+	float** outputData = (float**)malloc(outSizeH*sizeof(float*));
+
 	for (i = 0; i < outSizeH; i++) {
 		outputData[i] = (float*)calloc(outSizeW, sizeof(float));
 	}
@@ -65,7 +68,9 @@ float** correlation(float** map, nSize mapSize, float** inputData, nSize inSize,
 				for (c = 0; c < mapSize.c; c++) {
 					outputData[j][i] = outputData[j][i] + map[r][c] * exInputData[j + r][i + c];
 				}
+
 	//free exInputData
+
 	for (i = 0; i < inSize.r + 2 * (mapSize.r - 1); i++) {
 		free(exInputData[i]);
 	}
@@ -73,9 +78,9 @@ float** correlation(float** map, nSize mapSize, float** inputData, nSize inSize,
 
 	nSize outSize = { outSizeW, outSizeH };
 	switch (type) {
-	case full:   //从filter和image刚相交开始做卷积
+	case full:   //when filter pverlapp image
 		return outputData;
-	case same: {	//当filter的中心(K)与image的边角重合时，开始做卷积运算，res表示residual
+	case same: {	//when the center of filter overlap the corner of image，res represent residual
 		float** sameres = matEdgeShrink(outputData, outSize, halfmapsizew, halfmapsizeh);
 		for (i = 0; i < outSize.r; i++) {
 			free(outputData[i]);
@@ -83,7 +88,7 @@ float** correlation(float** map, nSize mapSize, float** inputData, nSize inSize,
 		free(outputData);
 		return sameres;
 	}
-	case valid: {	//当filter全部在image里面的时候，进行卷积运算
+	case valid: {	//when filter is inside of image
 		float** validres;
 		if (mapSize.r % 2 == 0 && mapSize.c % 2 == 0)
 			validres = matEdgeShrink(outputData, outSize, halfmapsizew * 2 - 1, halfmapsizeh * 2 - 1);
@@ -100,7 +105,6 @@ float** correlation(float** map, nSize mapSize, float** inputData, nSize inSize,
 }
 
 float** conv(float** map, nSize mapSize, float** inputData, nSize inSize, int type) {
-	//卷积操作可以用旋转180度的卷积核来求
 	float** flipmap = rotate180(map, mapSize);
 	float** res = correlation(flipmap, mapSize, inputData, inSize, type);
 	int i;
@@ -118,10 +122,10 @@ float** conv(float** map, nSize mapSize, float** inputData, nSize inSize, int ty
 //	for (i = 0; i < (r * upr); i++)
 //		res[i] = (float*)malloc((c * upc) * sizeof(float));
 //	for (j = 0; j < (r * upr); j = j + upr) {
-//		for (i = 0; i < (c * upc); i = i + upc) // 宽的扩充
+//		for (i = 0; i < (c * upc); i = i + upc) // expand the width
 //			for (m = 0; m < upc; m++)
 //				res[j][i + m] = mat[j / upr][i / upc];
-//		for (n = 1; n < upr; n++) //高的扩充
+//		for (n = 1; n < upr; n++) //expand the height
 //			for (i = 0; i < c * upc; i++)
 //				res[j + n][i] = res[j][i];
 //	}

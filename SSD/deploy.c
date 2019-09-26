@@ -7,7 +7,7 @@
 #include "minst.h"
 
 
-int  main() {
+int  main(){
 	int testNum = 10;
 	LabelArr testLabel = read_Label(testNum);
 	ImgArr testImg = read_Img(testNum);

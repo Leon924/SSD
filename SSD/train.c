@@ -18,11 +18,11 @@
 //	nSize inputSize = { testImg->ImgPtr[0].c,testImg->ImgPtr[0].r };
 //	int outSize = testLabel->LabelPtr[0].l;
 //
-//	// CNN结构的初始化
+//	// CNN network initialization
 //	CNN* cnn = (CNN*)malloc(sizeof(CNN));
 //	cnnsetup(cnn, inputSize, outSize);
 //
-//	// CNN训练
+//	// CNN training 
 //
 //	CNNOpts opts;
 //	opts.numepochs = 1;
@@ -31,7 +31,7 @@
 //	cnntrain(cnn, trainImg, trainLabel, opts, trainNum);
 //	printf("train finished!!\n");
 //	savecnn(cnn, "minst.cnn");
-//	// 保存训练误差
+//	// save training error
 //	FILE* fp = NULL;
 //	fp = fopen("E:\\Code\\Matlab\\PicTrans\\cnnL.ma", "wb");
 //	if (fp == NULL)
@@ -41,7 +41,7 @@
 //
 //
 //
-//	// CNN测试
+//	// CNN test
 //	importcnn(cnn, "minst.cnn");
 //	int testNum = 10000;
 //	float incorrectRatio = 0.0;

@@ -1,5 +1,6 @@
 #ifndef __MINST__ 
 #define __MINST__
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,7 +11,7 @@
 typedef struct MinstImg{
 	int c;	
 	int r;
-	float** ImgData; //array of one image
+	float** ImgData; 
 }MinstImg;
 
 typedef struct MinstImgArr{
