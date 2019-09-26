@@ -7,11 +7,11 @@
 #include <time.h>
 
 
-typedef struct MinstImg {
+typedef struct MinstImg{
 	int c;	
 	int r;
 	float** ImgData; //array of one image
-} MinstImg;
+}MinstImg;
 
 typedef struct MinstImgArr{
 	int ImgNum; 
