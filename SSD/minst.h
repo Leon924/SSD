@@ -20,8 +20,8 @@ typedef struct MinstImgArr{
 }*ImgArr;
 
 typedef struct MnistLabel{
-	int l;	//length of label
-	float* LabelData; //vector of label
+	int l;
+	float* LabelData;
 } MinstLabel;
 
 typedef struct MinstLabelArr{
